@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FubuMVC.Navigation", "FubuM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FubuMVC.Navigation.Testing", "FubuMVC.Navigation.Testing\FubuMVC.Navigation.Testing.csproj", "{F0B03B8B-35A7-448E-B8BE-E627D9C4A8B6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FubuMVC.Navigation.Docs", "FubuMVC.Navigation.Docs\FubuMVC.Navigation.Docs.csproj", "{1B179383-FB2F-4C7F-88A3-7678AFD14C18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +20,10 @@ Global
 		{F0B03B8B-35A7-448E-B8BE-E627D9C4A8B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0B03B8B-35A7-448E-B8BE-E627D9C4A8B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0B03B8B-35A7-448E-B8BE-E627D9C4A8B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B179383-FB2F-4C7F-88A3-7678AFD14C18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B179383-FB2F-4C7F-88A3-7678AFD14C18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B179383-FB2F-4C7F-88A3-7678AFD14C18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B179383-FB2F-4C7F-88A3-7678AFD14C18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

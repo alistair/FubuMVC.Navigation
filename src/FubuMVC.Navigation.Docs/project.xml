@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ProjectRoot xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <TagLine>Navigation model for FubuMVC applications</TagLine>
+  <Name>FubuMVC.Navigation</Name>
+  <GitHubPage>http://github.com/DarthFubuMVC/FubuMVC.Navigation</GitHubPage>
+  <UserGroupUrl>https://groups.google.com/forum/?fromgroups#!forum/fubumvc-devel</UserGroupUrl>
+  <BuildServerUrl>http://build.fubu-project.org/project.html?projectId=project45&amp;tab=projectOverview</BuildServerUrl>
+  <BottleName>FubuMVC.Navigation.Docs</BottleName>
+  <TeamCityBuildType>bt78</TeamCityBuildType>
+  <Nugets>
+    <PublishedNuget>
+      <Name>FubuMVC.Navigation</Name>
+      <Description>Navigation model for FubuMVC applications</Description>
+    </PublishedNuget>
+  </Nugets>
+  <Url>fubumvc.navigation</Url>
+</ProjectRoot>
