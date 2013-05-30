@@ -16,12 +16,10 @@ FubuRake::Solution.new do |sln|
 	}
 				 
 	sln.assembly_info = {
-		:product_name => "FubuMVC.CodeSnippets",
+		:product_name => "FubuMVC.Navigation",
 		:copyright => 'Copyright 2012-2013 Jeremy D. Miller, Josh Arnold, et al. All rights reserved.'
 	}
 	
 	sln.ripple_enabled = true
 	sln.fubudocs_enabled = true
-	
-	sln.assembly_bottle 'FubuMVC.Navigation'
 end
