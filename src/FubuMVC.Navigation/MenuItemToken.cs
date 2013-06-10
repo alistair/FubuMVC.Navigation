@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using FubuCore;
 
 namespace FubuMVC.Navigation
 {
@@ -9,6 +11,7 @@ namespace FubuMVC.Navigation
         {
             Url = string.Empty;
             Children = new MenuItemToken[0];
+			Data = new Dictionary<string, object>();
         }
 
         public bool EnabledAndShown()
@@ -24,8 +27,31 @@ namespace FubuMVC.Navigation
 		public string Description { get; set; }
 		public string Category { get; set; }
         public MenuItemState MenuItemState { get; set; }
+		public IDictionary<string, object> Data { get; set; } 
 
         public string IconUrl { get; set; }
+
+		public void Set(string key, object value)
+		{
+			Data.Add(key, value);
+		}
+
+		public void Value<T>(string key, Action<T> continuation)
+		{
+			if (!Has(key)) return;
+
+			continuation(Get<T>(key));
+		}
+
+		public T Get<T>(string key)
+		{
+			return Data.Get<T>(key);
+		}
+
+		public bool Has(string key)
+		{
+			return Data.ContainsKey(key);
+		}
 
         public bool Equals(MenuItemToken other)
         {

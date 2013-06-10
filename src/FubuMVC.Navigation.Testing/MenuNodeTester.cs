@@ -14,6 +14,37 @@ namespace FubuMVC.Navigation.Testing
     [TestFixture]
     public class MenuNodeTester
     {
+		[Test]
+		public void set_data()
+		{
+			var node = new MenuNode(FakeKeys.Key9);
+			var value = Guid.NewGuid();
+
+			node["Test"] = value;
+			node["Test"].ShouldEqual(value);
+		}
+
+		[Test]
+		public void get_data()
+		{
+			var node = new MenuNode(FakeKeys.Key9);
+			var value = Guid.NewGuid();
+
+			node["Test"] = value;
+
+			node.Get<Guid>("Test").ShouldEqual(value);
+		}
+
+		[Test]
+		public void has_data()
+		{
+			var node = new MenuNode(FakeKeys.Key9);
+			var value = Guid.NewGuid();
+
+			node["Test"] = value;
+			node.Has("Test").ShouldBeTrue();
+		}
+
         [Test]
         public void set_the_icon()
         {
@@ -143,7 +174,16 @@ namespace FubuMVC.Navigation.Testing
             node.BehaviorChain.ShouldBeTheSameAs(chain1);
         }
 
-        [Test]
+	    [Test]
+	    public void create_for_action_with_lambda()
+	    {
+		    var key = StringToken.FromKeyString("Something");
+		    var node = MenuNode.ForAction<FakeController>(key, x => x.GetFake(), x => x.Category = "Test");
+
+			node.Category.ShouldEqual("Test");
+	    }
+
+	    [Test]
         public void create_for_input_where_it_is_null()
         {
             var key = StringToken.FromKeyString("Something");
@@ -169,6 +209,15 @@ namespace FubuMVC.Navigation.Testing
 
             node.BehaviorChain.ShouldBeTheSameAs(chain1);
         }
+
+		[Test]
+		public void create_for_input_with_lamba()
+		{
+			var key = StringToken.FromKeyString("Something");
+			var node = MenuNode.ForInput<FakeInput>(key, x => x.Category = "Test");
+
+			node.Category.ShouldEqual("Test");
+		}
 
         [Test]
         public void for_intput_with_model()

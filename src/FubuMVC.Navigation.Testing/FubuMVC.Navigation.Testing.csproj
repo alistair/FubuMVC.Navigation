@@ -43,6 +43,15 @@
     <Reference Include="FubuMVC.Core">
       <HintPath>..\packages\FubuMVC.Core\lib\net40\FubuMVC.Core.dll</HintPath>
     </Reference>
+    <Reference Include="FubuMVC.Core.Assets">
+      <HintPath>..\packages\FubuMVC.Core.Assets\lib\net40\FubuMVC.Core.Assets.dll</HintPath>
+    </Reference>
+    <Reference Include="FubuMVC.Core.UI">
+      <HintPath>..\packages\FubuMVC.Core.UI\lib\net40\FubuMVC.Core.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="FubuMVC.Core.View">
+      <HintPath>..\packages\FubuMVC.Core.View\lib\net40\FubuMVC.Core.View.dll</HintPath>
+    </Reference>
     <Reference Include="FubuTestingSupport">
       <HintPath>..\packages\FubuTestingSupport\lib\FubuTestingSupport.dll</HintPath>
     </Reference>
@@ -91,6 +100,7 @@
     <Compile Include="MenuItemAttributes_integrated_Tester.cs" />
     <Compile Include="MenuItemAttributeTester.cs" />
     <Compile Include="MenuItemStateTester.cs" />
+    <Compile Include="MenuItemTokenTester.cs" />
     <Compile Include="MenuNodeTester.cs" />
     <Compile Include="MenuRegistrationTester.cs" />
     <Compile Include="NavigationGraphTester.cs" />
@@ -102,7 +112,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ripple.dependencies.config" />
+    <None Include="ripple.dependencies.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FubuMVC.Navigation\FubuMVC.Navigation.csproj">

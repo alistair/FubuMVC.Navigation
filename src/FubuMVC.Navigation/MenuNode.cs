@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using FubuLocalization;
 using FubuMVC.Core.Registration.Nodes;
 using FubuMVC.Core.Registration.Querying;
@@ -29,6 +30,7 @@ namespace FubuMVC.Navigation
         private string _icon;
         private Type _isEnabledConditionType = typeof (Always);
         private MenuItemState _unauthorizedState = MenuItemState.Hidden;
+	    private readonly IDictionary<string, object> _data = new Dictionary<string, object>();
 
         public MenuNode(StringToken key)
         {
@@ -110,10 +112,29 @@ namespace FubuMVC.Navigation
 
         public MenuChain Children { get; private set; }
 
+		public string Category { get; set; }
+
         public MenuNode IsEnabledBy<T>() where T : IConditional
         {
             return IsEnabledBy(typeof (T));
         }
+
+		/// <summary>
+		/// Apply key/value pairs
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		[IndexerName("Data")]
+		public object this[string key]
+		{
+			get { return _data[key]; }
+			set { _data[key] = value; }
+		}
+
+		public T Get<T>(string key)
+		{
+			return _data.Get<T>(key);
+		}
 
 
         public MenuNode IsEnabledBy(Type value)
@@ -196,6 +217,14 @@ namespace FubuMVC.Navigation
             };
         }
 
+		public static MenuNode ForInput<T>(StringToken key, Action<MenuNode> configure) where T : class
+		{
+			var node = ForInput<T>(key);
+			configure(node);
+
+			return node;
+		}
+
         public static MenuNode ForInput<T>(string title, T input = null) where T : class
         {
             return ForInput<T>(new NavigationKey(title), input: input);
@@ -205,6 +234,14 @@ namespace FubuMVC.Navigation
         {
             return new MenuNode(key, r => r.Find(method, category: "GET"));
         }
+
+		public static MenuNode ForAction<T>(StringToken key, Expression<Action<T>> method, Action<MenuNode> configure)
+		{
+			var node = ForAction(key, method);
+			configure(node);
+
+			return node;
+		}
 
         public static MenuNode ForAction<T>(string title, Expression<Action<T>> method)
         {
@@ -263,6 +300,14 @@ namespace FubuMVC.Navigation
             return this;
         }
 
+		public void ForData(Action<string, object> action)
+		{
+			_data.Each((pair) => action(pair.Key, pair.Value));
+		}
 
+	    public bool Has(string key)
+	    {
+		    return _data.ContainsKey(key);
+	    }
     }
 }

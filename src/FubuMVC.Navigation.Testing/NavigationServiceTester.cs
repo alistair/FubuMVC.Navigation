@@ -1,3 +1,5 @@
+using FubuMVC.Core.Assets;
+using FubuMVC.Core.Assets.Files;
 using FubuMVC.Core.Http;
 using FubuMVC.Core.Registration.Nodes;
 using FubuMVC.Core.Registration.Routes;
@@ -13,8 +15,9 @@ namespace FubuMVC.Navigation.Testing
     {
         private MenuNode theNode;
         private BehaviorChain theChain;
-        private MenuItemToken theToken;
         private StubUrlRegistry theUrls;
+
+	    private string theIconUrl;
 
         protected override void beforeEach()
         {
@@ -35,6 +38,9 @@ namespace FubuMVC.Navigation.Testing
             theNode.Children.AddToEnd(new MenuNode(FakeKeys.Key3));
             theNode.Children.AddToEnd(new MenuNode(FakeKeys.Key4));
 
+	        theIconUrl = "test.png";
+	        MockFor<IAssetUrls>().Stub(x => x.UrlForAsset(AssetFolder.images, theNode.Icon())).Return(theIconUrl);
+
             theUrls = new StubUrlRegistry();
             Services.Inject<IUrlRegistry>(theUrls);
 
@@ -43,14 +49,14 @@ namespace FubuMVC.Navigation.Testing
 
             MockFor<ICurrentHttpRequest>().Stub(x => x.ToFullUrl(theNode.CreateUrl()))
                 .Return("the full url");
-
-            theToken = ClassUnderTest.BuildToken(theNode);
         }
 
-        [Test, Ignore("Until navigation is moved out")]
+		private MenuItemToken theToken { get { return ClassUnderTest.BuildToken(theNode); } }
+
+        [Test]
         public void will_resolve_the_asset_url_for_the_icon_if_it_exists()
         {
-            //theToken.IconUrl.ShouldEqual(theUrls.UrlForAsset(AssetFolder.images, theNode.Icon()));
+            theToken.IconUrl.ShouldEqual(theIconUrl);
         }
 
         [Test]
@@ -82,6 +88,34 @@ namespace FubuMVC.Navigation.Testing
         {
             theToken.Children.ShouldHaveCount(3);
         }
+
+		[Test]
+		public void no_category()
+		{
+			theToken.Category.ShouldBeNull();
+		}
+
+		[Test]
+		public void sets_the_category()
+		{
+			theNode.Category = "test";
+			theToken.Category.ShouldEndWith(theNode.Category);
+		}
+
+		[Test]
+		public void sets_the_data()
+		{
+			theNode["k1"] = "value1";
+			theNode["k2"] = "value2";
+
+			theToken.Get<string>("k1").ShouldEqual("value1");
+			theToken.Get<string>("k2").ShouldEqual("value2");
+
+			var value = "empty";
+			theToken.Value<string>("k2", x => value = x);
+
+			value.ShouldEqual("value2");
+		}
     }
 
     [TestFixture]

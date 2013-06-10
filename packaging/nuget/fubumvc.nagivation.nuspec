@@ -12,7 +12,7 @@
     <description>Navigation model for FubuMVC applications</description>
     <tags>web framework specification fubumvc</tags>
     <dependencies>
-	<dependency id="FubuMVC.Core"/>
+        <dependency id="FubuMVC.Core.Assets"/>
     </dependencies>
   </metadata>
   <files>
