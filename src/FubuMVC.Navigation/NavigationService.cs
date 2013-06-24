@@ -4,22 +4,22 @@ using FubuCore;
 using FubuLocalization;
 using FubuMVC.Core.Assets;
 using FubuMVC.Core.Assets.Files;
-using FubuMVC.Core.Http;
 using FubuMVC.Core.Registration;
+using FubuMVC.Core.Urls;
 
 namespace FubuMVC.Navigation
 {
     public class NavigationService : INavigationService
     {
-        private readonly ICurrentHttpRequest _request;
+	    private readonly IChainUrlResolver _urlResolver;
         private readonly IMenuStateService _stateService;
 	    private readonly IAssetUrls _urls;
 
         private readonly NavigationGraph _navigation;
 
-		public NavigationService(BehaviorGraph graph, ICurrentHttpRequest request, IMenuStateService stateService, IAssetUrls urls)
-        {
-            _request = request;
+		public NavigationService(BehaviorGraph graph, IChainUrlResolver urlResolver, IMenuStateService stateService, IAssetUrls urls)
+		{
+			_urlResolver = urlResolver;
             _stateService = stateService;
             _urls = urls;
             _navigation = graph.Settings.Get<NavigationGraph>();
@@ -50,7 +50,7 @@ namespace FubuMVC.Navigation
 
             if (node.Type == MenuNodeType.Leaf)
             {
-                token.Url = _request.ToFullUrl(node.CreateUrl());
+	            token.Url = _urlResolver.UrlFor(node.UrlInput, node.BehaviorChain);
             }
 
 			node.ForData(token.Set);

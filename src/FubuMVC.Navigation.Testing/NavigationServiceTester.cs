@@ -47,7 +47,7 @@ namespace FubuMVC.Navigation.Testing
             MockFor<IMenuStateService>().Stub(x => x.DetermineStateFor(theNode))
                 .Return(MenuItemState.Available);
 
-            MockFor<ICurrentHttpRequest>().Stub(x => x.ToFullUrl(theNode.CreateUrl()))
+			MockFor<IChainUrlResolver>().Stub(x => x.UrlFor(theNode.UrlInput, theNode.BehaviorChain))
                 .Return("the full url");
         }
 
@@ -148,7 +148,7 @@ namespace FubuMVC.Navigation.Testing
             MockFor<IMenuStateService>().Stub(x => x.DetermineStateFor(theNode))
                 .Return(MenuItemState.Available);
 
-            MockFor<ICurrentHttpRequest>().Stub(x => x.ToFullUrl(theNode.CreateUrl()))
+            MockFor<IChainUrlResolver>().Stub(x => x.UrlFor(theNode.UrlInput, theNode.BehaviorChain))
                 .Return("the full url");
 
             theToken = ClassUnderTest.BuildToken(theNode);

@@ -279,11 +279,6 @@ namespace FubuMVC.Navigation
             return Node(new NavigationKey(key));
         }
 
-        public string CreateUrl()
-        {
-            return _chain.Route.CreateUrlFromInput(UrlInput);
-        }
-
         public override string ToString()
         {
             return string.Format("MenuNode: {0}", _key);
