@@ -28,3 +28,4 @@ bottles.cmd
 Gemfile.lock
 logs
 pak-*.zip
+src/FubuMVC.Navigation.Testing/fubu-content

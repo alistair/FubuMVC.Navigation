@@ -3,7 +3,6 @@ using System.Linq;
 using FubuCore;
 using FubuLocalization;
 using FubuMVC.Core.Assets;
-using FubuMVC.Core.Assets.Files;
 using FubuMVC.Core.Registration;
 using FubuMVC.Core.Urls;
 
@@ -13,16 +12,16 @@ namespace FubuMVC.Navigation
     {
 	    private readonly IChainUrlResolver _urlResolver;
         private readonly IMenuStateService _stateService;
-	    private readonly IAssetUrls _urls;
+        private readonly IAssetTagBuilder _urls;
 
-        private readonly NavigationGraph _navigation;
+        private readonly IMenuResolver _navigation;
 
-		public NavigationService(BehaviorGraph graph, IChainUrlResolver urlResolver, IMenuStateService stateService, IAssetUrls urls)
+        public NavigationService(IMenuResolver navigation, IChainUrlResolver urlResolver, IMenuStateService stateService, IAssetTagBuilder urls)
 		{
-			_urlResolver = urlResolver;
+            _navigation = navigation;
+            _urlResolver = urlResolver;
             _stateService = stateService;
             _urls = urls;
-            _navigation = graph.Settings.Get<NavigationGraph>();
         }
 
         public IEnumerable<MenuItemToken> MenuFor(StringToken key)
@@ -45,7 +44,7 @@ namespace FubuMVC.Navigation
 
             if (node.Icon().IsNotEmpty())
             {
-                token.IconUrl = _urls.UrlForAsset(AssetFolder.images, node.Icon());
+                token.IconUrl = _urls.FindImageUrl(node.Icon());
             }
 
             if (node.Type == MenuNodeType.Leaf)

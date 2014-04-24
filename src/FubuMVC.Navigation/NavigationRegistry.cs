@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 using FubuLocalization;
-using FubuMVC.Core;
 using FubuMVC.Core.Registration;
 
 namespace FubuMVC.Navigation
 {
-    [CanBeMultiples, ConfigurationType(ConfigurationType.Settings)]
     public class NavigationRegistry : IConfigurationAction
     {
         private readonly IList<IMenuRegistration> _registrations = new List<IMenuRegistration>();

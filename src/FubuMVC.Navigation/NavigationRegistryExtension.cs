@@ -6,8 +6,7 @@ namespace FubuMVC.Navigation
     {
         public void Configure(FubuRegistry registry)
         {
-            registry.Policies.Add<MenuItemAttributeConfigurator>();
-            registry.Policies.Add<CompileNavigationStep>();
+            registry.Policies.Global.Add<MenuItemAttributeConfigurator>();
 
             registry.Services<NavigationServiceRegistry>();
         }

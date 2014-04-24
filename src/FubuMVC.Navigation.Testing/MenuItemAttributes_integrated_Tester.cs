@@ -1,4 +1,6 @@
+using FubuMVC.Core;
 using FubuMVC.Core.Registration;
+using FubuMVC.StructureMap;
 using NUnit.Framework;
 using System.Linq;
 using FubuTestingSupport;
@@ -8,26 +10,26 @@ namespace FubuMVC.Navigation.Testing
     [TestFixture]
     public class MenuItemAttributes_integrated_Tester
     {
-        private BehaviorGraph graph;
-
-        [SetUp]
-        public void SetUp()
-        {
-            graph = BehaviorGraph.BuildFrom(x => {
-                x.Import<NavigationRegistryExtension>();
-                x.Actions.IncludeType<Controller1>();
-            });
-        }
 
         [Test]
         public void puts_the_navigation_graph_in_the_right_order()
         {
-            var navigationGraph = graph.Settings.Get<NavigationGraph>();
+            var registry = new FubuRegistry();
+            registry.Actions.IncludeType<Controller1>();
 
-            navigationGraph.FindNode(new NavigationKey("Two")).ShouldBeOfType<MenuNode>().Previous.Key.Key.ShouldEqual("Three");
+            using (var runtime = FubuApplication.For(registry).StructureMap().Bootstrap())
+            {
+                var resolver = runtime.Factory.Get<IMenuResolver>();
 
-            navigationGraph.MenuFor("Root").AllNodes().Select(x => x.Key.Key)
-                .ShouldHaveTheSameElementsAs("Three", "Two", "One","Four");
+                resolver.MenuFor(new NavigationKey("Root")).AllNodes().Select(x => x.Key.Key)
+                    .ShouldHaveTheSameElementsAs("Three", "Two", "One", "Four");
+
+                runtime.Factory.Get<NavigationGraph>()
+                    .FindNode(new NavigationKey("Two")).ShouldBeOfType<MenuNode>().Previous.Key.Key.ShouldEqual("Three");
+
+            }
+
+
         }
 
         public class Controller1

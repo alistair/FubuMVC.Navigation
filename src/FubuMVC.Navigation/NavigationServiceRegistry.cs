@@ -8,6 +8,7 @@ namespace FubuMVC.Navigation
         {
             SetServiceIfNone<INavigationService, NavigationService>();
             SetServiceIfNone<IMenuStateService, MenuStateService>();
+            SetServiceIfNone<IMenuResolver, MenuResolverCache>();
         }
     }
 }

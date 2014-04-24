@@ -1,6 +1,7 @@
 using System;
 using FubuCore;
 using FubuLocalization;
+using FubuMVC.Core;
 using FubuMVC.Core.Registration;
 using FubuMVC.Core.Registration.Nodes;
 using FubuMVC.Core.Registration.Querying;
@@ -136,7 +137,7 @@ namespace FubuMVC.Navigation.Testing
             var node = MenuNode.ForCreatorOf(key, typeof (Address));
 
             
-            var chain = new BehaviorChain();
+            var chain = new RoutedChain("something");
             chain.UrlCategory.Creates.Add(typeof(Address));
 
             resolve(node, graph => graph.AddChain(chain));
@@ -151,14 +152,12 @@ namespace FubuMVC.Navigation.Testing
             var key = StringToken.FromKeyString("Something");
             var node = MenuNode.ForAction<FakeController>(key, x => x.GetFake());
 
-            var chain1 = new BehaviorChain();
+            var chain1 = new RoutedChain(new RouteDefinition("something"));
             chain1.AddToEnd(ActionCall.For<FakeController>(x => x.GetFake()));
-            chain1.Route = new RouteDefinition("something");
             chain1.Route.AddHttpMethodConstraint("GET");
 
-            var chain2 = new BehaviorChain();
+            var chain2 = new RoutedChain(new RouteDefinition("something"));
             chain2.AddToEnd(ActionCall.For<FakeController>(x => x.GetFake()));
-            chain2.Route = new RouteDefinition("something");
             chain2.Route.AddHttpMethodConstraint("POST");
 
             resolve(node, graph =>
@@ -191,14 +190,12 @@ namespace FubuMVC.Navigation.Testing
 
             node.UrlInput.ShouldBeNull();
 
-            var chain1 = new BehaviorChain();
+            var chain1 = new RoutedChain("something");
             chain1.AddToEnd(ActionCall.For<FakeController>(x => x.FromInput(null)));
-            chain1.Route = new RouteDefinition("something");
             chain1.Route.AddHttpMethodConstraint("GET");
 
-            var chain2 = new BehaviorChain();
+            var chain2 = new RoutedChain("something");
             chain2.AddToEnd(ActionCall.For<FakeController>(x => x.FromInput(null)));
-            chain2.Route = new RouteDefinition("something");
             chain2.Route.AddHttpMethodConstraint("POST");
 
             resolve(node, graph =>
@@ -228,14 +225,12 @@ namespace FubuMVC.Navigation.Testing
 
             node.UrlInput.ShouldBeTheSameAs(input);
 
-            var chain1 = new BehaviorChain();
+            var chain1 = new RoutedChain("something");
             chain1.AddToEnd(ActionCall.For<FakeController>(x => x.FromInput(null)));
-            chain1.Route = new RouteDefinition("something");
             chain1.Route.AddHttpMethodConstraint("GET");
 
-            var chain2 = new BehaviorChain();
+            var chain2 = new RoutedChain("something");
             chain2.AddToEnd(ActionCall.For<FakeController>(x => x.FromInput(null)));
-            chain2.Route = new RouteDefinition("something");
             chain2.Route.AddHttpMethodConstraint("POST");
 
             resolve(node, graph =>
@@ -345,7 +340,7 @@ namespace FubuMVC.Navigation.Testing
 
     public class FakeConditional : IConditional
     {
-        public bool ShouldExecute()
+        public bool ShouldExecute(IFubuRequestContext context)
         {
             throw new NotImplementedException();
         }

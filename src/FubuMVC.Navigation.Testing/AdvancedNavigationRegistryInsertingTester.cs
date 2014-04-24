@@ -1,5 +1,7 @@
 using System;
+using FubuMVC.Core;
 using FubuMVC.Core.Registration;
+using FubuMVC.StructureMap;
 using NUnit.Framework;
 using System.Linq;
 using FubuTestingSupport;
@@ -16,14 +18,22 @@ namespace FubuMVC.Navigation.Testing
         public void SetUp()
         {
             registry = new NavigationRegistry();
-            _graph = new Lazy<NavigationGraph>(() =>
-            {
-                return BehaviorGraph.BuildFrom(x =>
+            _graph = new Lazy<NavigationGraph>(() => {
+                NavigationGraph graph = null;
+
+                var r = new FubuRegistry();
+                r.Actions.IncludeType<Controller1>();
+                r.Policies.Global.Add(registry);
+
+
+                using (var runtime = FubuApplication.For(r).StructureMap().Bootstrap())
                 {
-                    x.Import<NavigationRegistryExtension>();
-                    x.Actions.IncludeType<Controller1>();
-                    x.Policies.Add(registry);
-                }).Settings.Get<NavigationGraph>();
+                    runtime.Factory.Get<IMenuResolver>().MenuFor(new NavigationKey("Root"));
+
+                    graph = runtime.Factory.Get<NavigationGraph>();
+                }
+
+                return graph;
             });
         }
 

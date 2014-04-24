@@ -1,6 +1,5 @@
 using FubuMVC.Core.Assets;
-using FubuMVC.Core.Assets.Files;
-using FubuMVC.Core.Http;
+using FubuMVC.Core.Registration;
 using FubuMVC.Core.Registration.Nodes;
 using FubuMVC.Core.Registration.Routes;
 using FubuMVC.Core.Urls;
@@ -14,17 +13,18 @@ namespace FubuMVC.Navigation.Testing
     public class when_building_a_MenuItemToken_for_a_single_node : InteractionContext<NavigationService>
     {
         private MenuNode theNode;
-        private BehaviorChain theChain;
+        private RoutedChain theChain;
         private StubUrlRegistry theUrls;
 
 	    private string theIconUrl;
 
         protected override void beforeEach()
         {
-            theChain = new BehaviorChain();
-            theChain.Route = new RouteDefinition("something"){
+            theChain = new RoutedChain(new RouteDefinition("something"){
                 Input = new RouteInput<FakeInput>("somepattern")
-            };
+            });
+
+            Services.Inject(new BehaviorGraph());
             
 
             theNode = new MenuNode(FakeKeys.Key1, r => theChain);
@@ -39,7 +39,7 @@ namespace FubuMVC.Navigation.Testing
             theNode.Children.AddToEnd(new MenuNode(FakeKeys.Key4));
 
 	        theIconUrl = "test.png";
-	        MockFor<IAssetUrls>().Stub(x => x.UrlForAsset(AssetFolder.images, theNode.Icon())).Return(theIconUrl);
+	        MockFor<IAssetTagBuilder>().Stub(x => x.FindImageUrl(theNode.Icon())).Return(theIconUrl);
 
             theUrls = new StubUrlRegistry();
             Services.Inject<IUrlRegistry>(theUrls);
@@ -128,12 +128,12 @@ namespace FubuMVC.Navigation.Testing
 
         protected override void beforeEach()
         {
-            theChain = new BehaviorChain();
-            theChain.Route = new RouteDefinition("something")
+            theChain = new RoutedChain(new RouteDefinition("something")
             {
                 Input = new RouteInput<FakeInput>("somepattern")
-            };
+            });
 
+            Services.Inject(new BehaviorGraph());
 
             theNode = new MenuNode(FakeKeys.Key1, r => theChain);
             theNode.Resolve(null);

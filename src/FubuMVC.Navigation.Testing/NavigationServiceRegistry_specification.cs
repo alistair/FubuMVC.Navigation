@@ -25,5 +25,14 @@ namespace FubuMVC.Navigation.Testing
         {
             registeredTypeIs<INavigationService, NavigationService>();
         }
+
+        [Test]
+        public void menu_resolver()
+        {
+            registeredTypeIs<IMenuResolver, MenuResolverCache>();
+
+            ServiceRegistry.ShouldBeSingleton(typeof(MenuResolverCache))
+                .ShouldBeTrue();
+        }
     }
 }

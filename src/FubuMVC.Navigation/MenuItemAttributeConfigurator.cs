@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 namespace FubuMVC.Navigation
 {
-    [ConfigurationType(ConfigurationType.Navigation)]
     public class MenuItemAttributeConfigurator : IConfigurationAction
     {
         public void Configure(BehaviorGraph graph)

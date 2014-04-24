@@ -1,13 +1,52 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FubuCore;
 using FubuCore.DependencyAnalysis;
 using FubuCore.Util;
 using FubuLocalization;
 using FubuMVC.Core.Registration;
+using FubuMVC.Core.Registration.Querying;
 
 namespace FubuMVC.Navigation
 {
+    
+    public interface IMenuResolver
+    {
+        MenuChain MenuFor(StringToken key);
+    }
+
+    public class MenuResolverCache : IMenuResolver
+    {
+        private readonly Lazy<NavigationGraph> _inner; 
+
+        public MenuResolverCache(IChainResolver resolver, NavigationGraph graph)
+        {
+            _inner = new Lazy<NavigationGraph>(() => {
+                graph.Compile();
+                graph.AllNodes().OfType<MenuNode>().Each(x =>
+                {
+                    try
+                    {
+                        x.Resolve(resolver);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new FubuException(4001, ex, "Failed to resolve a BehaviorChain for navigation element " + x.Key);
+                    }
+
+                });
+
+                return graph;
+            });
+        }
+
+        public MenuChain MenuFor(StringToken key)
+        {
+            return _inner.Value.MenuFor(key);
+        }
+    }
+
     [ApplicationLevel]
     public class NavigationGraph
     {

@@ -1,41 +1,66 @@
+using System.Linq;
+using FubuLocalization;
 using FubuMVC.Core;
 using FubuMVC.Core.Registration;
-using NUnit.Framework;
-using System.Linq;
+using FubuMVC.StructureMap;
 using FubuTestingSupport;
+using NUnit.Framework;
 
 namespace FubuMVC.Navigation.Testing
 {
     [TestFixture]
     public class NavigationRegistry_with_FubuRegistry_integration_testing
     {
+        private FubuRegistry registry;
+        private FubuRuntime runtime;
+
+        [SetUp]
+        public void SetUp()
+        {
+            registry = new FubuRegistry();
+            runtime = null;
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (runtime != null) runtime.Dispose();
+        }
+
+        private IMenuResolver resolver
+        {
+            get
+            {
+                if (runtime == null)
+                {
+                    runtime = FubuApplication.For(registry).StructureMap().Bootstrap();
+                }
+
+                return runtime.Factory.Get<IMenuResolver>();
+            }
+        }
+
         [Test]
         public void navigation_method_on_fubu_registry_works()
         {
-            var registry = new FubuRegistry();
             registry.Import<NavigationRegistryExtension>();
 
-            registry.Policies.Add<NavigationRegistry>(x =>
-            {
+            registry.Policies.Global.Add<NavigationRegistry>(x => {
                 x.ForMenu(FakeKeys.Key1);
                 x.Add += MenuNode.Node(FakeKeys.Key2);
                 x.Add += MenuNode.Node(FakeKeys.Key3);
             });
 
-            var graph = BehaviorGraph.BuildFrom(registry).Settings.Get<NavigationGraph>();
-
-            graph.MenuFor(FakeKeys.Key1).Select(x => x.Key)
+            resolver.MenuFor(FakeKeys.Key1).Select(x => x.Key)
                 .ShouldHaveTheSameElementsAs(FakeKeys.Key2, FakeKeys.Key3);
         }
 
         [Test]
         public void import_navigation_from_child_registry()
         {
-            var registry = new FubuRegistry();
             registry.Import<NavigationRegistryExtension>();
 
-            registry.Policies.Add<NavigationRegistry>(x =>
-            {
+            registry.Policies.Global.Add<NavigationRegistry>(x => {
                 x.ForMenu(FakeKeys.Key1);
                 x.Add += MenuNode.Node(FakeKeys.Key2);
                 x.Add += MenuNode.Node(FakeKeys.Key3);
@@ -43,23 +68,20 @@ namespace FubuMVC.Navigation.Testing
 
             registry.Import<ChildRegistry>();
 
-            var graph = BehaviorGraph.BuildFrom(registry).Settings.Get<NavigationGraph>();
 
-            graph.MenuFor(FakeKeys.Key1).Select(x => x.Key)
+            resolver.MenuFor(FakeKeys.Key1).Select(x => x.Key)
                 .ShouldHaveTheSameElementsAs(FakeKeys.Key2, FakeKeys.Key3, FakeKeys.Key4, FakeKeys.Key5);
 
-            graph.MenuFor(FakeKeys.Key6).Select(x => x.Key)
+            resolver.MenuFor(FakeKeys.Key6).Select(x => x.Key)
                 .ShouldHaveTheSameElementsAs(FakeKeys.Key7, FakeKeys.Key8);
         }
 
         [Test]
         public void import_with_strings_instead_of_StringToken()
         {
-            var registry = new FubuRegistry();
             registry.Import<NavigationRegistryExtension>();
 
-            registry.Policies.Add<NavigationRegistry>(x =>
-            {
+            registry.Policies.Global.Add<NavigationRegistry>(x => {
                 x.ForMenu("Key1");
                 x.Add += MenuNode.Node("Key2");
                 x.Add += MenuNode.Node("Key3");
@@ -67,9 +89,8 @@ namespace FubuMVC.Navigation.Testing
 
             registry.Import<ChildRegistry>();
 
-            var graph = BehaviorGraph.BuildFrom(registry).Settings.Get<NavigationGraph>();
 
-            graph.MenuFor("Key1").Select(x => x.Key)
+            resolver.MenuFor(new NavigationKey("Key1")).Select(x => x.Key)
                 .ShouldHaveTheSameElementsAs(new NavigationKey("Key2"), new NavigationKey("Key3"));
         }
 
@@ -77,7 +98,7 @@ namespace FubuMVC.Navigation.Testing
         {
             public ChildRegistry()
             {
-                Policies.Add<ChildNavigation>();
+                Policies.Global.Add<ChildNavigation>();
             }
         }
 
